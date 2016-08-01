@@ -1,6 +1,6 @@
-#include <iostream>
+#include <boost/log/trivial.hpp>
 
 int main(void) {
-    std::cout << "Hello, WebSocket Message Exchanger!";
+    BOOST_LOG_TRIVIAL(debug) << "Hello, WebSocket Message Exchanger!\n";
     return 0;
 }
