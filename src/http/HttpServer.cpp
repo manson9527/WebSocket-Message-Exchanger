@@ -35,7 +35,7 @@ namespace flint {
 
         // handle HTTP request
         server_.set_http_handler(
-                boost::bind(&HttpServer::onHttpRequest, this, ::_1));
+                boost::bind(&HttpServer::internalHttpHandler, this, ::_1));
 
         server_.listen(boost::asio::ip::tcp::v4(), port_);
         server_.start_accept();
@@ -46,9 +46,16 @@ namespace flint {
         server_.stop();
     }
 
-    void HttpServer::onHttpRequest(websocketpp::connection_hdl hdl) {
+    bool HttpServer::onHttpRequest(HttpSession *session) {
+        session->setStatus(websocketpp::http::status_code::ok);
+        return false;
+    }
+
+    void HttpServer::internalHttpHandler(websocketpp::connection_hdl hdl) {
         HttpSession *session = new HttpSession(&server_, hdl);
-        HttpRequest(session);
+        if (!onHttpRequest(session)) {
+            HttpRequest(session);
+        }
         delete session;
     }
 

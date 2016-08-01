@@ -45,8 +45,11 @@ namespace flint {
 
         virtual void onStop();
 
-    protected:
-        void onHttpRequest(websocketpp::connection_hdl hdl);
+        // return true means that this session has been processed and it wouldn't be transfer to another component
+        virtual bool onHttpRequest(HttpSession *session);
+
+    private:
+        void internalHttpHandler(websocketpp::connection_hdl hdl);
 
     protected:
         boost::asio::io_service &ioService_;
