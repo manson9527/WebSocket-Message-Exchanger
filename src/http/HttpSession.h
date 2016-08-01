@@ -22,11 +22,11 @@
 
 namespace flint {
 
-    typedef websocketpp::server<websocketpp::config::asio> websocket_server;
+    typedef websocketpp::server<websocketpp::config::asio> http_server;
 
     class HttpSession {
     public:
-        HttpSession(websocket_server *server, websocketpp::connection_hdl hdl);
+        HttpSession(http_server *server, websocketpp::connection_hdl hdl);
 
         virtual ~HttpSession();
 
@@ -55,8 +55,8 @@ namespace flint {
         void setBody(const std::string &body);
 
     protected:
-        websocket_server *httpServer_;
-        websocket_server::connection_ptr conn_;
+        http_server *httpServer_;
+        http_server::connection_ptr conn_;
     };
 
 }

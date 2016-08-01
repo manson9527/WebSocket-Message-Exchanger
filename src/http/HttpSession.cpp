@@ -18,7 +18,7 @@
 
 namespace flint {
 
-    HttpSession::HttpSession(websocket_server *server,
+    HttpSession::HttpSession(http_server *server,
                              websocketpp::connection_hdl hdl) :
             httpServer_(server) {
         conn_ = httpServer_->get_con_from_hdl(hdl);
