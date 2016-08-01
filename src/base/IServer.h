@@ -14,9 +14,31 @@
  * limitations under the License.
  */
 
-#include <boost/log/trivial.hpp>
+#ifndef ISERVER_H_
+#define ISERVER_H_
 
-int main(void) {
-    BOOST_LOG_TRIVIAL(debug) << "Hello, WebSocket Message Exchanger!\n";
-    return 0;
-}
+namespace flint {
+
+    class IServer {
+    public:
+        IServer();
+
+        virtual ~IServer();
+
+        virtual void start();
+
+        virtual void stop();
+
+        bool isRunning();
+
+    protected:
+        virtual void onStart() = 0;
+
+        virtual void onStop() = 0;
+
+    protected:
+        bool isRunning_;
+    };
+
+} /* namespace flint */
+#endif /* ISERVER_H_ */

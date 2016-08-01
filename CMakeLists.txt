@@ -32,6 +32,8 @@ set(STATIC_LIBRARY_FILES
 # source files
 set(SOURCE_FILES
         ${SRC}/main.cpp
+        ${SRC}/base/IServer.cpp
+        ${SRC}/http/HttpSession.cpp
         )
 
 include_directories(${INCLUDE_FILES})
