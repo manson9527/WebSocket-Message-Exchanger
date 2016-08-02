@@ -46,6 +46,14 @@ namespace flint {
 
         std::string const &getHeader(const std::string &key);
 
+        virtual void response(websocketpp::http::status_code::value statusCode,
+                              const std::string &body = "");
+
+        virtual void response(websocketpp::http::status_code::value statusCode,
+                              std::map<std::string, std::string> &headers,
+                              const std::string &body = "");
+
+    protected:
         void setHeader(const std::string &headerKey,
                        const std::string &headerValue);
 

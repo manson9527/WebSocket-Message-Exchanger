@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <boost/log/trivial.hpp>
+
 #include "HttpSession.h"
 
 namespace flint {
@@ -25,6 +27,7 @@ namespace flint {
     }
 
     HttpSession::~HttpSession() {
+        BOOST_LOG_TRIVIAL(debug) << "~HttpSession\n";
     }
 
     std::string const &HttpSession::getSrcAddr() {
@@ -71,5 +74,22 @@ namespace flint {
 
     void HttpSession::setBody(const std::string &body) {
         conn_->set_body(body);
+    }
+
+    void HttpSession::response(websocketpp::http::status_code::value statusCode,
+                               const std::string &body) {
+        setStatus(statusCode);
+        setBody(body);
+    }
+
+    void HttpSession::response(websocketpp::http::status_code::value statusCode,
+                               std::map<std::string, std::string> &headers,
+                               const std::string &body) {
+        setStatus(statusCode);
+        std::map<std::string, std::string>::iterator it;
+        for (it = headers.begin(); it != headers.end(); ++it) {
+            setHeader(it->first, it->second);
+        }
+        setBody(body);
     }
 }

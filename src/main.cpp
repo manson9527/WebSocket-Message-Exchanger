@@ -35,4 +35,5 @@ int main(void) {
 void onHttpRequest(flint::HttpSession *httpSession) {
     std::string path = httpSession->getResource();
     BOOST_LOG_TRIVIAL(debug) << "received HTTP request [" << path << "]";
+    httpSession->response(websocketpp::http::status_code::ok, "hello, manson!");
 }

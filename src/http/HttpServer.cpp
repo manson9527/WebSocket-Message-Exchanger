@@ -47,7 +47,7 @@ namespace flint {
     }
 
     bool HttpServer::onHttpRequest(HttpSession *session) {
-        session->setStatus(websocketpp::http::status_code::ok);
+        session->response(websocketpp::http::status_code::ok);
         return false;
     }
 
