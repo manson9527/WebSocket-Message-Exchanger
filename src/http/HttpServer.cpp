@@ -50,6 +50,9 @@ namespace flint {
     void HttpServer::onStop() {
         BOOST_LOG_TRIVIAL(debug) << "HttpServer stop! " << port_;
         server_.stop();
+        if (standalone_) {
+            ioService_->stop();
+        }
     }
 
     bool HttpServer::onHttpRequest(HttpSession *session) {

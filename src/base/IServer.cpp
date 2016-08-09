@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <boost/thread/mutex.hpp>
 #include <boost/log/trivial.hpp>
 
 #include "IServer.h"
@@ -31,6 +32,8 @@ namespace flint {
     }
 
     void IServer::start() {
+        boost::mutex lock_;
+        lock_.lock();
         if (isRunning_) {
             BOOST_LOG_TRIVIAL(warning) << "Server is already running!!!\n";
             return;
@@ -38,9 +41,12 @@ namespace flint {
             isRunning_ = true;
             onStart();
         }
+        lock_.unlock();
     }
 
     void IServer::stop() {
+        boost::mutex lock_;
+        lock_.lock();
         if (!isRunning_) {
             BOOST_LOG_TRIVIAL(warning) << "Server not running skip stop!!!\n";
             return;
@@ -48,6 +54,7 @@ namespace flint {
             isRunning_ = false;
             onStop();
         }
+        lock_.unlock();
     }
 
     bool IServer::isRunning() {
