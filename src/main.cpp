@@ -23,12 +23,13 @@ void onHttpRequest(flint::HttpSession *httpSession);
 
 int main(void) {
     BOOST_LOG_TRIVIAL(debug) << "Hello, WebSocket Message Exchanger!\n";
-    boost::asio::io_service *ioService = new boost::asio::io_service();
-    flint::HttpServer *server = new flint::HttpServer(*ioService, 9527);
+//    boost::asio::io_service *ioService = new boost::asio::io_service();
+//    flint::HttpServer *server = new flint::HttpServer(ioService, 9527);
+    flint::HttpServer *server = new flint::HttpServer(9527);
     server->HttpRequest.connect(
             boost::bind(&onHttpRequest, ::_1));
     server->start();
-    ioService->run();
+//    ioService->run();
     return 0;
 }
 

@@ -33,7 +33,9 @@ namespace flint {
 
     class HttpServer : public IServer {
     public:
-        HttpServer(boost::asio::io_service &ioService, int port);
+        HttpServer(int port);
+
+        HttpServer(boost::asio::io_service *ioService, int port);
 
         virtual ~HttpServer();
 
@@ -52,9 +54,12 @@ namespace flint {
         void internalHttpHandler(websocketpp::connection_hdl hdl);
 
     protected:
-        boost::asio::io_service &ioService_;
+        boost::asio::io_service *ioService_;
         http_server server_;
         int port_;
+
+    private:
+        bool standalone_;
     };
 
 }

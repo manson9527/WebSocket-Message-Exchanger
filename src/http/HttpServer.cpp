@@ -20,9 +20,12 @@
 #include "HttpServer.h"
 
 namespace flint {
+    HttpServer::HttpServer(int port) :
+            IServer(), ioService_(new boost::asio::io_service()), port_(port), standalone_(true) {
+    }
 
-    HttpServer::HttpServer(boost::asio::io_service &ioService, int port) :
-            IServer(), ioService_(ioService), port_(port) {
+    HttpServer::HttpServer(boost::asio::io_service *ioService, int port) :
+            IServer(), ioService_(ioService), port_(port), standalone_(false) {
     }
 
     HttpServer::~HttpServer() {
@@ -30,7 +33,7 @@ namespace flint {
 
     void HttpServer::onStart() {
         BOOST_LOG_TRIVIAL(debug) << "HttpServer start! " << port_;
-        server_.init_asio(&ioService_);
+        server_.init_asio(ioService_);
         server_.set_reuse_addr(true);
 
         // handle HTTP request
@@ -39,6 +42,9 @@ namespace flint {
 
         server_.listen(boost::asio::ip::tcp::v4(), port_);
         server_.start_accept();
+        if (standalone_) {
+            ioService_->run();
+        }
     }
 
     void HttpServer::onStop() {
@@ -58,5 +64,4 @@ namespace flint {
         }
         delete session;
     }
-
 }
