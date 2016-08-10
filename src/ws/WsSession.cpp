@@ -22,9 +22,67 @@ namespace flint {
     WsSession::WsSession(http_server *server,
                          websocketpp::connection_hdl hdl) :
             HttpSession(server, hdl) {
+        // set close hander
+        conn_->set_close_handler(
+                boost::bind(&WsSession::onClose, this, ::_1));
+        // set fail hander
+        conn_->set_fail_handler(boost::bind(&WsSession::onFail, this, ::_1));
+        // set interrupt hander
+        conn_->set_interrupt_handler(
+                boost::bind(&WsSession::onInterrupt, this, ::_1));
+        // set message hander
+        conn_->set_message_handler(
+                boost::bind(&WsSession::onMessage, this, ::_1, ::_2));
     }
 
     WsSession::~WsSession() {
         BOOST_LOG_TRIVIAL(debug) << "~WsSession\n";
     }
+
+    void WsSession::sendText(const std::string &message) {
+        try {
+            BOOST_LOG_TRIVIAL(debug) << "WsSession::send:" << message;
+            conn_->send(message.data(), message.size(),
+                        websocketpp::frame::opcode::TEXT);
+        } catch (std::exception &e) {
+            BOOST_LOG_TRIVIAL(error) << "WsSession::send exception:" << e.what();
+        }
+    }
+
+    void WsSession::close() {
+        closeInternal();
+    }
+
+    void WsSession::closeInternal() {
+        BOOST_LOG_TRIVIAL(debug) << "WsSession closeInternal: " << getResource();
+        conn_->close(websocketpp::close::status::normal, "");
+    }
+
+    void WsSession::onMessage(websocketpp::connection_hdl hdl,
+                              websocketpp::server<websocketpp::config::asio>::message_ptr msg) {
+        const std::string &message = msg->get_payload();
+        Message(message);
+        BOOST_LOG_TRIVIAL(debug) << "WsSession onMessage: " << message;
+    }
+
+    void WsSession::onClose(websocketpp::connection_hdl hdl) {
+        BOOST_LOG_TRIVIAL(debug) << "WsSession onClose: " << getResource();
+        clear();
+    }
+
+    void WsSession::onFail(websocketpp::connection_hdl hdl) {
+        BOOST_LOG_TRIVIAL(debug) << "WsSession onFail: " << getResource();
+        clear();
+    }
+
+    void WsSession::onInterrupt(websocketpp::connection_hdl hdl) {
+        BOOST_LOG_TRIVIAL(debug) << "WsSession onInterrupt: " << getResource();
+        clear();
+    }
+
+    void WsSession::clear() {
+        Close();
+        delete this;
+    }
+
 }

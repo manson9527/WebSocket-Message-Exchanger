@@ -18,5 +18,9 @@
 #define WEBSOCKET_MESSAGE_EXCHANGER_BASE_H
 
 #include <boost/log/trivial.hpp>
+#include <boost/asio.hpp>
+
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
 
 #endif //WEBSOCKET_MESSAGE_EXCHANGER_BASE_H

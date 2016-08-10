@@ -18,6 +18,10 @@
 #ifndef WEBSOCKET_MESSAGE_EXCHANGER_WSSESSION_H
 #define WEBSOCKET_MESSAGE_EXCHANGER_WSSESSION_H
 
+#include <boost/signals2.hpp>
+#include <boost/bind.hpp>
+
+#include "base/base.h"
 #include "http/HttpSession.h"
 
 namespace flint {
@@ -27,6 +31,30 @@ namespace flint {
         WsSession(http_server *server, websocketpp::connection_hdl hdl);
 
         virtual ~WsSession();
+
+    public:
+        void sendText(const std::string &message);
+
+        void close();
+
+    public:
+        boost::signals2::signal<void()> Close;
+
+        boost::signals2::signal<void(const std::string &)> Message;
+
+    private:
+        void onMessage(websocketpp::connection_hdl hdl,
+                       websocketpp::server<websocketpp::config::asio>::message_ptr msg);
+
+        void onClose(websocketpp::connection_hdl hdl);
+
+        void onFail(websocketpp::connection_hdl hdl);
+
+        void onInterrupt(websocketpp::connection_hdl hdl);
+
+        void closeInternal();
+
+        void clear();
     };
 }
 
