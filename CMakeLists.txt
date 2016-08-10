@@ -35,6 +35,8 @@ set(SOURCE_FILES
         ${SRC}/base/IServer.cpp
         ${SRC}/http/HttpSession.cpp
         ${SRC}/http/HttpServer.cpp
+        ${SRC}/ws/WsServer.cpp
+        ${SRC}/ws/WsSession.cpp
         )
 
 include_directories(${INCLUDE_FILES})

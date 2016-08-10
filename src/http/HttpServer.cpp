@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include <boost/log/trivial.hpp>
 #include <boost/bind.hpp>
 
+#include "base/base.h"
 #include "HttpServer.h"
 
 namespace flint {
@@ -55,16 +55,9 @@ namespace flint {
         }
     }
 
-    bool HttpServer::onHttpRequest(HttpSession *session) {
-        session->response(websocketpp::http::status_code::ok);
-        return false;
-    }
-
     void HttpServer::internalHttpHandler(websocketpp::connection_hdl hdl) {
         HttpSession *session = new HttpSession(&server_, hdl);
-        if (!onHttpRequest(session)) {
-            HttpRequest(session);
-        }
+        HttpRequest(session);
         delete session;
     }
 }

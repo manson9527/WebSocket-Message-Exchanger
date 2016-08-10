@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <boost/log/trivial.hpp>
+#include "base/base.h"
 
 #include "HttpSession.h"
 
