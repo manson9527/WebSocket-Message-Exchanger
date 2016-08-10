@@ -36,9 +36,18 @@ namespace flint {
     }
 
     void WsServer::onStart() {
-        HttpServer::onStart();
+        BOOST_LOG_TRIVIAL(debug) << "WsServer start! " << port_;
+        server_.init_asio(ioService_);
+        server_.set_reuse_addr(true);
+
         server_.set_open_handler(
                 boost::bind(&WsServer::internalWsHandler, this, ::_1));
+
+        server_.listen(boost::asio::ip::tcp::v4(), port_);
+        server_.start_accept();
+        if (standalone_) {
+            ioService_->run();
+        }
     }
 
     void WsServer::internalWsHandler(websocketpp::connection_hdl hdl) {

@@ -82,6 +82,7 @@ namespace flint {
 
     void WsSession::clear() {
         Close();
+        BOOST_LOG_TRIVIAL(debug) << "WsSession clear: " << getResource();
         delete this;
     }
 

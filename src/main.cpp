@@ -16,20 +16,29 @@
 
 #include <boost/asio/io_service.hpp>
 #include <boost/log/trivial.hpp>
+#include <ws/WsServer.h>
 
 #include "http/HttpServer.h"
 
 void onHttpRequest(flint::HttpSession *httpSession);
 
+void onWebsocketConnect(flint::WsSession *wsSession);
+
 int main(void) {
     BOOST_LOG_TRIVIAL(debug) << "Hello, WebSocket Message Exchanger!\n";
+
+    // test http server
 //    boost::asio::io_service *ioService = new boost::asio::io_service();
 //    flint::HttpServer *server = new flint::HttpServer(ioService, 9527);
-    flint::HttpServer *server = new flint::HttpServer(9527);
-    server->HttpRequest.connect(
-            boost::bind(&onHttpRequest, ::_1));
-    server->start();
+//    flint::HttpServer *server = new flint::HttpServer(9527);
+//    server->HttpRequest.connect(boost::bind(&onHttpRequest, ::_1));
+//    server->start();
 //    ioService->run();
+
+    // test ws server
+    flint::WsServer *server = new flint::WsServer(9527);
+    server->WebsocketConnect.connect(boost::bind(&onWebsocketConnect, ::_1));
+    server->start();
     return 0;
 }
 
@@ -37,4 +46,11 @@ void onHttpRequest(flint::HttpSession *httpSession) {
     std::string path = httpSession->getResource();
     BOOST_LOG_TRIVIAL(debug) << "received HTTP request [" << path << "]";
     httpSession->response(websocketpp::http::status_code::ok, "hello, manson!");
+}
+
+void onWebsocketConnect(flint::WsSession *wsSession) {
+    std::string path = wsSession->getResource();
+    BOOST_LOG_TRIVIAL(debug) << "received WS connect [" << path << "]";
+    wsSession->sendText("Hello, manson!");
+    wsSession->close();
 }
